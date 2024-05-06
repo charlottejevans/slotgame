@@ -115,7 +115,7 @@ const printRows = (rows) => {
         let rowString = ""
         for (const [i, symbol] of row.entries()) {
             rowString += symbol
-            if (i != row.length - 1) {
+            if (i !== row.length - 1) {
                 rowString += " | "
             }
         }
@@ -124,12 +124,34 @@ const printRows = (rows) => {
 }
 
 
+const getWinnings =(rows, bet, lines) => {
+    let winnings = 0
+    for (let row = 0; row < lines; row++) {
+        const symbols = rows[row] // Gets the symbols in the row.
+        let allSame = true // Assume all symbols are the same. Can use later to check if a symbol is false.
+
+        for(const symbol of symbols) {
+            if (symbol !== symbols[0]) {
+                allSame = false // If the symbol is not the same as the first symbol, then it is false.
+                break // Breaks out of the loop.
+        }
+        }
+
+        if (allSame) {
+            winnings += bet * SYMBOL_VALUES[symbols[0]] // If all symbols are the same, then it will multiply the bet by the symbol value.
+        }
+    }
+
+    return winnings // Returns the winnings.
+}
 
 
-    let balance = deposit();
-        const numberOfLines = getNumberOfLines()
-        const bet = getBet(balance, numberOfLines)
-        const reels = spin()
-        const rows = transpose(reels)
-    printRows(rows)
 
+let balance = deposit();
+const numberOfLines = getNumberOfLines()
+const bet = getBet(balance, numberOfLines)
+const reels = spin()
+const rows = transpose(reels)
+printRows(rows)
+const winnings = getWinnings(rows, bet, numberOfLines)
+console.log("Ayo, you won, $" + winnings.toString())
