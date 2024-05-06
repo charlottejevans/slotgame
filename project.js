@@ -13,17 +13,17 @@ const ROWS = 3; // Number of rows in the slot machine. consts should always be i
 const COLS = 3; // Number of columns in the slot machine.
 
 const SYMBOLS_COUNT = {
-    "A": 2, // only 2 A's. Key A mapped with the value of 2.
-    "B": 4,
-    "C": 6,
-    "D": 8
+    A: 2, // only 2 A's. Key A mapped with the value of 2.
+    B: 4,
+    C: 6,
+    D: 8
 }
 
 const SYMBOL_VALUES = {
-    "A": 5, // If i get a line of A's, I'll multiply the bet by 5.
-    "B": 4,
-    "C": 3,
-    "D": 2
+    A: 5, // If i get a line of A's, I'll multiply the bet by 5.
+    B: 4,
+    C: 3,
+    D: 2
 }
 
 
@@ -64,17 +64,43 @@ const getNumberOfLines = () => {
 // Task 3 - Collect a bet amount (how much they use to bet)
 const getBet = (balance, lines) => {
     while (true) {
-        const bet = prompt('How much would you like to bet per line? ');
+        const bet = prompt('How much would you like to bet per line? ')
         const numberBet = parseInt(bet);
         // Checks three conditions. If the number is not a number, if the number is less than 0, or if the number is greater than the balance divided by the number of lines.
         if (isNaN(numberBet) || numberBet < 0 || numberBet > balance / lines) {
-            console.log('Invalid Bet Amount. Try Again.');
+            console.log('Invalid Bet Amount. Try Again.')
         } else {
             return numberBet;
         }
     }
 }
 
+const spin = () => {
+    const symbols = []
+    // Loops through all entries in our symbol count and provides key and value of each.
+    for (const [symbol, count] of Object.entries(SYMBOLS_COUNT)) {
+        for(let i = 0; i < count; i++) {
+            // pushes symbols into the array
+            symbols.push(symbol)
+        }
+    }
+    // Each array represents a column inside the slot machine. Can generate what goes inside them by using the symbols array.
+    const reels = [[], [], []] // Nested arrays.
+    // Loops through each reel.
+    for (let i = 0; i < COLS; i++) { // For every reel, we want to fill it with symbols.
+        const reelSymbols = [...symbols] // Copies/Generates the available symbols from the array into another array.
+        for (let j = 0; j < ROWS; j++) {
+            const randomIndex = Math.floor(Math.random() * reelSymbols.length) // Generates a random index. Rounding down to the nearest whole number.
+            const selectedSymbol = reelSymbols[randomIndex] // Selects a random symbol from the reelSymbols array.
+            reels[i].push(selectedSymbol) // i represents the current index of the reel. Pushes the selected symbol into the reel.
+            reelSymbols.splice(randomIndex, 1) // Removes the selected symbol from the reelSymbols array. 1 means to remove 1 element. RI is the index of the element to remove.
+        }
+    }
+    return reels // Returns the reels array.
+}
+
+const reels = spin()
+console.log(reels)
 let balance = deposit();
-const numberOfLines = getNumberOfLines();
-const bet = getBet(balance, numberOfLines);
+const numberOfLines = getNumberOfLines()
+const bet = getBet(balance, numberOfLines)
